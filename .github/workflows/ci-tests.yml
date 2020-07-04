@@ -34,6 +34,10 @@ jobs:
         node-version: [12.x]
 
     steps:
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
     - name: Start selenoid
       uses: Xotabu4/selenoid-github-action@v1
     - run: npm ci  
