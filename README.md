@@ -1,4 +1,5 @@
 # Código para frontend
+![CI tests](https://github.com/kevinccbsg/KC-CICD-module-frontend/workflows/CI%20tests/badge.svg?branch=master)
 
 Tenemos una aplicación web escrita en [vue](https://vuejs.org/v2/guide/) que consultará la api de backend. Para comenzar a usar la aplicación web necesitaremos instalar la última versión de [npm](https://www.npmjs.com/).
 
