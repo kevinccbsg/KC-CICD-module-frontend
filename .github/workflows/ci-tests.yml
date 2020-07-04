@@ -23,24 +23,36 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Install selenium
+      run: |
+      echo "Install Prerequisites"
+      sudo apt-get update
+      sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
+      sudo apt-get install default-jdk
+
+      echo "Install Google Chrome"
+      sudo curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
+      sudo echo "deb [arch=amd64]  http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
+      sudo apt-get -y update
+      sudo apt-get -y install google-chrome-stable
+
+      echo "Install ChromeDriver"
+      wget https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip
+      unzip chromedriver_linux64.zip
+      sudo mv chromedriver /usr/local/bin/chromedriver
+      sudo chown root:root /usr/local/bin/chromedriver
+      sudo chmod +x /usr/local/bin/chromedriver
+
+      echo "Download Required Jar Files"
+      wget https://selenium-release.storage.googleapis.com/3.13/selenium-server-standalone-3.13.0.jar
+      wget http://www.java2s.com/Code/JarDownload/testng/testng-6.8.7.jar.zip
+      unzip testng-6.8.7.jar.zip
+
+      echo "Start Chrome via Selenium Server"
+      xvfb-run java -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver -jar selenium-server-standalone.jar
+      chromedriver --url-base=/wd/hub &
+      ls /usr/local/bin/chromedriver
     - run: npm ci
     - run: npm run lint
-    - run: npm run unit
-  e2e:
-    runs-on: ubuntu-latest
+    - run: npm test
 
-    strategy:
-      matrix:
-        node-version: [12.x]
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    - name: Start selenoid
-      uses: Xotabu4/selenoid-github-action@v1
-    - name: Run e2e tests
-      run: npm run e2e
