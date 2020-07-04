@@ -10,8 +10,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-
+  install:
     runs-on: ubuntu-latest
 
     strategy:
@@ -26,5 +25,17 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run lint
-    - run: npm test
+    - run: npm run unit
+  e2e:
+    runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - name: Start selenoid
+      uses: Xotabu4/selenoid-github-action@v1
+    - run: npm ci  
+    - name: Run e2e tests
+      run: npm run e2e
