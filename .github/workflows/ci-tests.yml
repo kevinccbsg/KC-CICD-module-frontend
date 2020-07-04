@@ -48,7 +48,7 @@ jobs:
     - run: npm run lint
     - run: npm test
 
-    publish:
+  publish:
     needs: tests
     if: ${{ github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
