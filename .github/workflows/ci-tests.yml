@@ -23,37 +23,17 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install selenium
+    - name: Install ChromeDriver
       run: |
-        echo "---Install Prerequisites---"
-        sudo apt-get update
-        sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
-        sudo apt-get install -y default-jdk
-
-        echo "Install Google Chrome"
-        sudo apt-get install -y gnupg gnupg2 gnupg1
-        sudo apt-get -y install curl
-        sudo curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
-        sudo echo "deb [arch=amd64]  http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
-        sudo apt-get -y update
-        sudo apt-get -y install google-chrome-stable
-
-        echo "---Install ChromeDriver---"
-        sudo wget https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip
-        sudo unzip chromedriver_linux64.zip
-        sudo mv chromedriver /usr/local/bin/chromedriver
-        sudo chown root:root /usr/local/bin/chromedriver
-        sudo chmod +x /usr/local/bin/chromedriver
-
-        echo "---Download Required Jar Files"
-        sudo wget https://selenium-release.storage.googleapis.com/3.13/selenium-server-standalone-3.13.0.jar
-        sudo wget http://www.java2s.com/Code/JarDownload/testng/testng-6.8.7.jar.zip
-        sudo unzip testng-6.8.7.jar.zip
-
-        echo "---Start Chrome via Selenium Server---"
-        sudo xvfb-run java -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver -jar selenium-server-standalone.jar
-        sudo chromedriver --url-base=/wd/hub &
-        sudo ls /usr/local/bin/chromedriver
+        CHROME_VERSION=$(google-chrome --version | cut -f 3 -d ' ' | cut -d '.' -f 1) \
+          && CHROMEDRIVER_RELEASE=$(curl --location --fail --retry 3 http://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}) \
+          && curl --silent --show-error --location --fail --retry 3 --output /tmp/chromedriver_linux64.zip "http://chromedriver.storage.googleapis.com/$CHROMEDRIVER_RELEASE/chromedriver_linux64.zip" \
+          && cd /tmp \
+          && unzip chromedriver_linux64.zip \
+          && rm -rf chromedriver_linux64.zip \
+          && sudo mv chromedriver /usr/local/bin/chromedriver \
+          && sudo chmod +x /usr/local/bin/chromedriver \
+          && chromedriver --version
     - run: npm ci
     - run: npm run lint
     - run: npm test
