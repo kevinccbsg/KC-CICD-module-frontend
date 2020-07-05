@@ -1,0 +1,41 @@
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "kc-cicd-frontend"
+  namespace: "cicd-development"
+  labels:
+    app: "kc-cicd-frontend"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "kc-cicd-frontend"
+  template:
+    metadata:
+      labels:
+        app: "kc-cicd-frontend"
+    spec:
+      containers:
+      - name: "kc-ci-frontend"
+        image: "eu.gcr.io/bngo-app/kc-ci-frontend"
+---
+apiVersion: "autoscaling/v2beta1"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "kc-cicd-frontend-hpa-vg94"
+  namespace: "cicd-development"
+  labels:
+    app: "kc-cicd-frontend"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "kc-cicd-frontend"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      targetAverageUtilization: 80
