@@ -17,7 +17,8 @@ env:
   GKE_ZONE: europe-west1-c
   IMAGE: kc-ci-frontend
   REGISTRY_HOSTNAME: eu.gcr.io
-  DEPLOYMENT_NAME: gke-test
+  DEPLOYMENT_NAME: kc-cicd-frontend
+  GKE_CLUSTER: kc-cluster
 
 jobs:
   tests:
