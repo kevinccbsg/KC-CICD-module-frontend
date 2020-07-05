@@ -96,5 +96,4 @@ jobs:
         cat .helm/kustomization.yaml
         ./kustomize build .helm
         ./kustomize build .helm | kubectl apply -f -
-        kubectl rollout status deployment $DEPLOYMENT_NAME
         kubectl get services -o wide
