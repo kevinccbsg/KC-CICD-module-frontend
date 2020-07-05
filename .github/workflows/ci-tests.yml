@@ -95,7 +95,8 @@ jobs:
       run: |
         gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
         cat <<EOF >>.helm/kustomization.yaml
-        - digest: $GITHUB_SHA
+        images:
+        - digest: sha256:$GITHUB_SHA
           name: "$REGISTRY_HOSTNAME/$GKE_PROJECT/$IMAGE"
         EOF
         cat .helm/kustomization.yaml
