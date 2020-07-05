@@ -17,7 +17,7 @@ spec:
         app: "kc-cicd-frontend"
     spec:
       containers:
-      - name: "kc-ci-frontend"
+      - name: "kc-ci-frontend-sha256-1"
         image: "eu.gcr.io/bngo-app/kc-ci-frontend"
 ---
 apiVersion: "autoscaling/v2beta1"
